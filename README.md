@@ -44,6 +44,19 @@ If prebuilt macOS binaries are not available for firtool, you'll need to:
 - Compatible Java version (managed by Bazel)
 - Docker (for OpenROAD flow components)
 
+#### Troubleshooting macOS Issues
+- If firtool download fails, check the [CIRCT releases page](https://github.com/llvm/circt/releases/tag/firtool-1.108.0) for available binaries
+- For Apple Silicon Macs, ensure you're using the ARM64 version if available
+- If using manual installation, verify firtool is in your PATH: `which firtool`
+
+## Cross-Platform Compatibility
+
+This project is designed to work across different platforms:
+- **Linux**: Fully supported with automated binary downloads
+- **macOS**: Supported with platform-aware configuration (may require manual firtool installation)
+- **Most Bazel rules**: Cross-platform compatible (Scala, Python, Java components)
+- **Platform-specific binaries**: Handled via Bazel's select() mechanism
+
 ## Build and view design
 
 Global route is enough to learn everything there is to learn about this example design.
