@@ -122,12 +122,26 @@ use_repo(maven, "naja_bazel_maven")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Platform-aware CIRCT/firtool binary download
+# TODO: Once official macOS binaries are consistently available, update URLs
+# For now, macOS users may need to install firtool manually if binaries are not available
 http_archive(
     name = "circt",
     build_file_content = """
 exports_files(glob(["bin/*"]), visibility = ["//visibility:public"])
 """,
-    sha256 = "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
+    sha256 = select({
+        "@platforms//os:linux": "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
+        # TODO: Add macOS SHA256 hashes when official binaries are confirmed available
+        "@platforms//os:macos": "0000000000000000000000000000000000000000000000000000000000000000",  # Placeholder
+        "//conditions:default": "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
+    }),
     strip_prefix = "firtool-1.108.0",
-    url = "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
+    url = select({
+        "@platforms//os:linux": "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
+        # TODO: Verify these URLs exist and update when official macOS binaries are available
+        # macOS users should check: https://github.com/llvm/circt/releases/tag/firtool-1.108.0
+        "@platforms//os:macos": "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-macos-x64.tar.gz",
+        "//conditions:default": "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
+    }),
 )
