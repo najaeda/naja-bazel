@@ -64,7 +64,6 @@ use_repo(pip, "naja-bazel-pip")
 
 bazel_dep(name = "bazel-orfs")
 
-# To bump version, run: bazelisk run @bazel-orfs//:bump
 git_override(
     module_name = "bazel-orfs",
     commit = "abacf584d7515bebec96491c757a806431b7f9f7",
@@ -73,9 +72,7 @@ git_override(
 
 orfs = use_extension("@bazel-orfs//:extension.bzl", "orfs_repositories")
 
-# To bump version, run: bazelisk run @bazel-orfs//:bump
 orfs.default(
-    # Official image https://hub.docker.com/r/openroad/orfs/tags
     image = "docker.io/openroad/orfs:v3.0-3503-gd7c7e73f",
     sha256 = "d5539ade517724de3765362589be443afb2624b14391b365612c8949a7c99a19",
 )
@@ -126,12 +123,13 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 # NOTE: This configuration only supports Linux. macOS users must install firtool manually.
 # See README.md for macOS installation instructions.
 # TODO: Add platform-aware firtool download support when official macOS binaries are consistently available
-http_archive(
-    name = "circt",
-    build_file_content = """
-exports_files(glob(["bin/*"]), visibility = ["//visibility:public"])
-""",
-    sha256 = "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
-    strip_prefix = "firtool-1.108.0",
-    url = "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
-)
+#http_archive(
+#name = "circt",
+#    build_file_content = """
+#exports_files(glob(["bin/*"], visibility = ["//visibility:public"]))
+#""",
+#    sha256 = "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
+#    strip_prefix = "firtool-1.108.0",
+#    url = "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
+#)
+
