@@ -88,13 +88,15 @@ chisel_binary(
     ],
 )
 
+# Default: Use firtool from PATH
+# To use a specific firtool binary, replace "firtool" with the full path, e.g.:
+# cmd = "$(execpath :generate_verilog) --firtool-binary-path /usr/local/bin/firtool -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)",
 genrule(
     name = "genverilog",
     srcs = [],
     outs = ["RetimeFanout.sv"],
-    cmd = "$(execpath :generate_verilog) --firtool-binary-path $(execpath @circt//:bin/firtool) -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)",
+    cmd = "$(execpath :generate_verilog) --firtool-binary-path firtool -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)",
     tools = [
         ":generate_verilog",
-        "@circt//:bin/firtool",
     ],
 )
