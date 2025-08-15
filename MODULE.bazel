@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: MIT
-# Cross-platform Bazel module for Naja OpenROAD flow
-# Supports Linux and macOS with platform-aware binary downloads
 
 module(
     name = "bazel-naja",
@@ -121,12 +119,17 @@ use_repo(maven, "naja_bazel_maven")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-http_archive(
-    name = "circt",
-    build_file_content = """
-exports_files(glob(["bin/*"], visibility = ["//visibility:public"]))
-""",
-    sha256 = "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
-    strip_prefix = "firtool-1.108.0",
-    url = "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
-)
+# CIRCT/firtool binary download - Linux only
+# NOTE: This configuration only supports Linux. macOS users must install firtool manually.
+# See README.md for macOS installation instructions.
+# TODO: Add platform-aware firtool download support when official macOS binaries are consistently available
+#http_archive(
+#name = "circt",
+#    build_file_content = """
+#exports_files(glob(["bin/*"], visibility = ["//visibility:public"]))
+#""",
+#    sha256 = "b1b57d1b76ceba2bb37229dab53839d5db6d61394149708c71f6265565991ce6",
+#    strip_prefix = "firtool-1.108.0",
+#    url = "https://github.com/llvm/circt/releases/download/firtool-1.108.0/firrtl-bin-linux-x64.tar.gz",
+#)
+

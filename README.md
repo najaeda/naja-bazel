@@ -11,51 +11,67 @@ Install [Bazelisk](https://bazel.build/install/bazelisk), Bazelisk will download
 
 ### Linux
 
-The project should work out of the box on Linux with the dependencies managed by Bazel.
+The project works out of the box on Linux with all dependencies automatically managed by Bazel, including firtool binary downloads.
 
 ### macOS
 
-The project is designed to be cross-platform and most rules and dependencies work on macOS. However, some binaries like firtool may require additional setup:
+**Important:** Due to current limitations in the Bazel configuration, macOS users must manually install firtool. The MODULE.bazel file only supports automatic binary downloads for Linux.
 
-#### Option 1: Use prebuilt binaries (if available)
-The MODULE.bazel file is configured to automatically download the appropriate firtool binary for macOS when available. Check the [CIRCT releases page](https://github.com/llvm/circt/releases/tag/firtool-1.108.0) for availability.
+#### Manual firtool Installation (Required for macOS)
 
-#### Option 2: Manual installation (fallback)
-If prebuilt macOS binaries are not available for firtool, you'll need to:
+You must install firtool manually before using this project on macOS:
 
-1. Install firtool manually:
-   ```bash
-   # Using Homebrew (if available)
-   brew install firtool
-   
-   # Or build from source following CIRCT documentation
-   # https://circt.llvm.org/GettingStarted/
-   ```
+**Option 1: Using Homebrew (recommended)**
+```bash
+# Note: Check if firtool is available in Homebrew
+brew install firtool
+```
 
-2. Update your local BUILD.bazel to point to the locally installed firtool:
-   ```starlark
-   # In the genverilog rule, replace:
-   # "$(execpath @circt//:bin/firtool)"
-   # with the path to your local firtool installation
-   ```
+**Option 2: Download prebuilt binaries**
+1. Visit the [CIRCT releases page](https://github.com/llvm/circt/releases/tag/firtool-1.108.0)
+2. Download the appropriate macOS binary (if available)
+3. Extract and add to your PATH
+
+**Option 3: Build from source**
+```bash
+# Follow the official CIRCT build instructions
+# https://circt.llvm.org/GettingStarted/
+git clone https://github.com/llvm/circt.git
+cd circt
+# Follow build instructions in the repository
+```
 
 #### Additional macOS Requirements
 - Xcode Command Line Tools: `xcode-select --install`
 - Compatible Java version (managed by Bazel)
 - Docker (for OpenROAD flow components)
 
+#### macOS Build Configuration
+
+After installing firtool, you may need to update the local BUILD.bazel file if firtool is not in a standard location:
+
+```starlark
+# In the genverilog rule, you might need to replace:
+# "$(execpath @circt//:bin/firtool)"
+# with the path to your local firtool installation, such as:
+# "/usr/local/bin/firtool"  # or wherever firtool is installed
+```
+
 #### Troubleshooting macOS Issues
-- If firtool download fails, check the [CIRCT releases page](https://github.com/llvm/circt/releases/tag/firtool-1.108.0) for available binaries
-- For Apple Silicon Macs, ensure you're using the ARM64 version if available
-- If using manual installation, verify firtool is in your PATH: `which firtool`
+- Verify firtool installation: `which firtool` and `firtool --version`
+- For Apple Silicon Macs, ensure you have the correct architecture binary
+- If build fails, check that firtool is accessible in your PATH
+
+#### Why Manual Installation is Required
+
+The current Bazel configuration (MODULE.bazel) only includes automatic binary downloads for Linux. While Bazel supports platform-aware binary selection, the CIRCT project doesn't consistently provide official macOS binaries for all releases. To avoid build failures, the configuration has been simplified to only support Linux automatic downloads.
 
 ## Cross-Platform Compatibility
 
-This project is designed to work across different platforms:
 - **Linux**: Fully supported with automated binary downloads
-- **macOS**: Supported with platform-aware configuration (may require manual firtool installation)
+- **macOS**: Supported but requires manual firtool installation (see above)
 - **Most Bazel rules**: Cross-platform compatible (Scala, Python, Java components)
-- **Platform-specific binaries**: Handled via Bazel's select() mechanism
+- **Future improvements**: Platform-aware binary downloads may be added when official macOS binaries are consistently available
 
 ## Build and view design
 
