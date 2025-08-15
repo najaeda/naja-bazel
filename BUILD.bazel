@@ -92,7 +92,15 @@ genrule(
     name = "genverilog",
     srcs = [],
     outs = ["RetimeFanout.sv"],
-    cmd = "$(execpath :generate_verilog) --firtool-binary-path $(execpath @circt//:bin/firtool) -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)",
+    cmd = """
+if [ -n "$$FIRTOOL_BIN" ]; then
+    # Use user-provided firtool binary (macOS and custom installations)
+    $(execpath :generate_verilog) --firtool-binary-path "$$FIRTOOL_BIN" -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)
+else
+    # Use Bazel-downloaded firtool binary (Linux)
+    $(execpath :generate_verilog) --firtool-binary-path $(execpath @circt//:bin/firtool) -- --default-layer-specialization=disable -o $(location :RetimeFanout.sv)
+fi
+""",
     tools = [
         ":generate_verilog",
         "@circt//:bin/firtool",
