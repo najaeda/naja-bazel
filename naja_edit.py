@@ -39,6 +39,8 @@ for terms in max_fanout[1]:
         print(t , "of model", t.get_instance().get_model_name())
         for attr in t.get_instance().get_attributes():
             print("   ", attr)
+top.dump_verilog(sys.argv[2])
+print("Done")
 
 
 
